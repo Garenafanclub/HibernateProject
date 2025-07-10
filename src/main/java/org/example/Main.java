@@ -8,21 +8,27 @@ import org.hibernate.cfg.Configuration;
 public class Main {
     public static void main(String[] args) {
 
-        Student student = new Student();
-        student.setsAge(25);
-        student.setsName("Sahil");
-        student.setRollNo(104);
+        Laptop laptop = new Laptop();
+        laptop.setBrand("ASUS");
+        laptop.setModel("Rog");
+        laptop.setRam(16);
 
+        Alien alien = new Alien();
+        alien.setAid(102);
+        alien.setAname("Chandan");
+        alien.setTech("Java");
+        alien.setLaptop(laptop);
 
         SessionFactory sessionFactory = new Configuration()
                 .configure("hibernate.cfg.xml")
-                .addAnnotatedClass(Student.class)
+                .addAnnotatedClass(Alien.class)
                 .buildSessionFactory();
 
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        student =  session.get(Student.class, 104);
-        session.remove(student);
+        alien = session.byId(Alien.class).load(102);
+        System.out.println(alien);
+        session.persist(alien);
         transaction.commit();
         session.close();
         sessionFactory.close();
