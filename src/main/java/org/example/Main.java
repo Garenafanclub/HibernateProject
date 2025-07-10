@@ -9,19 +9,20 @@ public class Main {
     public static void main(String[] args) {
 
         Student student = new Student();
-        student.setsAge(22);
-        student.setsName("Mayank");
-        student.setRollNo(101);
+        student.setsAge(25);
+        student.setsName("Sahil");
+        student.setRollNo(104);
 
 
         SessionFactory sessionFactory = new Configuration()
-                .configure("hibernate.cgf.xml")
+                .configure("hibernate.cfg.xml")
                 .addAnnotatedClass(Student.class)
                 .buildSessionFactory();
 
         Session session = sessionFactory.getCurrentSession();
         Transaction transaction = session.beginTransaction();
-        session.persist(student);
+        student =  session.get(Student.class, 104);
+        session.remove(student);
         transaction.commit();
         session.close();
         sessionFactory.close();
