@@ -6,6 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -32,16 +33,24 @@ public class Main {
         alien.setAid(101);
         alien.setAname("Mayank");
         alien.setTech("Java");
-        alien.setLaptop(Arrays.asList(l1,l2));
 
         Alien alien1 = new Alien();
-        alien1.setAid(101);
-        alien1.setAname("Mayank");
-        alien1.setTech("Java");
-        alien1.setLaptop(Arrays.asList(l1,l2));
+        alien1.setAid(102);
+        alien1.setAname("Chandan");
+        alien1.setTech("SpringBoot");
 
-        l1.setAlien(alien);
-        l2.setAlien(alien);
+        Alien alien2 = new Alien();
+        alien2.setAid(103);
+        alien2.setAname("Aryan");
+        alien2.setTech("C++");
+
+        alien.setLaptop(Arrays.asList(l1,l2));
+        alien1.setLaptop(Arrays.asList(l2,l3));
+        alien2.setLaptop(List.of(l1));
+
+        l1.setAliens(Arrays.asList(alien, alien2));
+        l2.setAliens(Arrays.asList(alien, alien2));
+        l3.setAliens(List.of(alien1));
 
         SessionFactory sessionFactory = new Configuration()
                 .configure("hibernate.cfg.xml")
@@ -54,10 +63,24 @@ public class Main {
 
         session.persist(l1);
         session.persist(l2);
+        session.persist(l3);
+
         session.persist(alien);
+        session.persist(alien1);
+        session.persist(alien2);
 
         transaction.commit();
-        session.close();
+    try{
+        Alien a4 = session.byId(Alien.class).load(alien2.getAid());
+        System.out.println("Loaded Alien: " + a4.getAname());
+    } catch (Exception e) {
+        System.err.println("Error: " + e.getMessage());
+    } finally {
+        // Close session only after all operations
+        if (session.isOpen()) {
+            session.close();
+        }
+    }
         sessionFactory.close();
     }
 }
